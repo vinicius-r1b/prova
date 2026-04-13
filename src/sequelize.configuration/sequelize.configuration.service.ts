@@ -1,28 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SequelizeModuleOptions, SequelizeOptionsFactory } from '@nestjs/sequelize';
-import { User } from 'src/user/user';
+import { Estilo } from 'src/estilos/estilo';
+import { Filme } from 'src/filmes/filme';
 
 @Injectable()
-export class SequelizeConfigurationService implements SequelizeOptionsFactory
-{
-    constructor(
-        private configService : ConfigService,
-    ){}
+export class SequelizeConfigurationService implements SequelizeOptionsFactory {
+  constructor(private configService: ConfigService) {}
 
-    createSequelizeOptions(): 
-    Promise<SequelizeModuleOptions> | SequelizeModuleOptions 
-    {
-        return {
-            dialect: 'mysql',
-            host: this.configService.get<string>('DB_HOST'),
-            port: this.configService.get<number>('DB_PORT'),
-            username: this.configService.get<string>('DB_USER'),
-            password: this.configService.get<string>('DB_PASSWORD'),
-            database: this.configService.get<string>('DB_DATABASE'),
-            synchronize: true,
-            autoLoadModels: true,
-            models: [User],
-        }
-    }
+  createSequelizeOptions(): Promise<SequelizeModuleOptions> | SequelizeModuleOptions {
+    return {
+      dialect: 'sqlite',
+      storage: this.configService.get<string>('DB_STORAGE') || 'database.sqlite',
+      synchronize: true,
+      autoLoadModels: true,
+      models: [Filme, Estilo],
+      logging: false,
+    };
+  }
 }
